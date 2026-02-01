@@ -445,18 +445,6 @@ main {
     line-height: 1.5;
 }
 
-/* Responsive adjustment for article view */
-@media (max-width: 768px) {
-    .article-view {
-        padding: 2rem 1.5rem;
-        margin: 0 1rem;
-    }
-
-    .article-header h1 {
-        font-size: 2rem;
-    }
-}
-
 /* Hamburger Menu default styles */
 .hamburger {
     display: none;
@@ -475,18 +463,58 @@ main {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 1.25rem;
+        /* Reduce side padding on mobile */
+    }
+
+    .section {
+        padding: 4rem 0;
+        /* Reduce vertical spacing */
+    }
+
+    .hero {
+        min-height: auto;
+        padding: 6rem 0 4rem;
+        /* Add top padding for fixed header clearance */
+    }
+
     .hero-content {
         flex-direction: column-reverse;
         text-align: center;
+        gap: 2rem;
     }
 
     .hero-text {
         padding-right: 0;
-        margin-top: 2rem;
+        margin-top: 1rem;
     }
 
     .hero-text h1 {
-        font-size: 2.5rem;
+        font-size: 2.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .hero-text p {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-image {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .hero-image img {
+        width: 250px;
+        /* Smaller image on mobile */
+        height: 250px;
+        max-width: 80%;
+        /* Prevent overflow */
+        border-width: 4px;
+        box-shadow: 0 10px 25px rgba(0, 51, 102, 0.15);
+        /* Softer shadow */
     }
 
     /* Mobile Navigation */
@@ -501,16 +529,19 @@ main {
         top: 0;
         right: -100%;
         height: 100vh;
-        width: 70%;
-        background-color: var(--medical-white);
+        width: 80%;
+        /* Wider menu for easier access */
+        max-width: 300px;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(15px);
+        /* Stronger blur */
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        transition: right 0.4s ease;
-        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Smoother interaction */
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
         z-index: 1000;
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(10px);
     }
 
     .nav-links.active {
@@ -518,7 +549,16 @@ main {
     }
 
     .nav-links li {
-        margin: 1.5rem 0;
+        margin: 1.25rem 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-links a {
+        font-size: 1.25rem;
+        /* Larger touch targets */
+        display: block;
+        padding: 0.5rem;
     }
 
     /* Hamburger Animation when Active */
@@ -532,5 +572,24 @@ main {
 
     .hamburger.active span:nth-child(3) {
         transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .article-view {
+        padding: 1.5rem 1rem;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    .hero-text h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero-image img {
+        width: 200px;
+        height: 200px;
     }
 }
