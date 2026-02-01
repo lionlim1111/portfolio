@@ -84,6 +84,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Helper to show loading
+    const showLoading = (elementId) => {
+        const el = document.getElementById(elementId);
+        if (el) {
+            el.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div></div>';
+        }
+    };
+
     // Load Global Settings (Nav, Footer, Titles)
     loadJSON('content/global.json').then(data => {
         if (!data) return;
@@ -144,11 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Awards Content (Root Array now)
     if (document.getElementById('awards-grid')) {
+        showLoading('awards-grid');
         loadJSON('content/awards.json').then(data => {
             const awardsGrid = document.getElementById('awards-grid');
 
             if (!data || !Array.isArray(data) || data.length === 0) {
-                awardsGrid.innerHTML = '<div class="empty-state">No Honor & Rewards Published</div>';
+                awardsGrid.innerHTML = '<div class="empty-state">No Awards Found</div>';
                 return;
             }
 
@@ -174,8 +183,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Articles List & View (Root Array now)
     if (document.getElementById('article-list') || document.getElementById('article-content')) {
+
+        // Show loading state
+        if (document.getElementById('article-list')) showLoading('article-list');
+        if (document.getElementById('article-content')) showLoading('article-content');
+
         loadJSON('content/articles.json').then(data => {
-            if (!data || !Array.isArray(data)) return;
+            if (!data || !Array.isArray(data)) {
+                // Handle global data error for article views
+                if (document.getElementById('article-list')) document.getElementById('article-list').innerHTML = '<div class="empty-state">Error loading articles.</div>';
+                if (document.getElementById('article-content')) document.getElementById('article-content').innerHTML = '<div class="empty-state">Error loading content.</div>';
+                return;
+            }
 
             // List View
             if (document.getElementById('article-list')) {
