@@ -2,145 +2,155 @@ media:
   input: img
   output: img
 content:
-  - name: settings
-    label: Site Config & Content
+  - name: global
+    label: Global Settings (Menu/Footer)
     type: file
-    path: data.json
+    path: content/global.json
     format: json
     fields:
-      - name: common
-        label: Global Settings (Nav/Footer)
-        type: object
+      - name: logo_alt
+        label: Logo Alt Text
+        type: string
+      - name: nav
+        label: Navigation Menu
+        type: list
+        item_label: label
         fields:
-          - name: logo_alt
-            label: Logo Alt Text
+          - name: label
+            label: Menu Label
             type: string
-          - name: nav
-            label: Navigation Menu
+          - name: url
+            label: Page URL
+            type: string
+      - name: footer_rights
+        label: Footer Text
+        type: string
+
+  - name: home
+    label: Home Page
+    type: file
+    path: content/home.json
+    format: json
+    fields:
+      - name: hero_title
+        label: Main Headline
+        type: string
+      - name: hero_subtitle
+        label: Subtitle Description
+        type: string
+      - name: cta_button
+        label: Button Text
+        type: string
+
+  - name: about
+    label: About Page
+    type: file
+    path: content/about.json
+    format: json
+    fields:
+      - name: title
+        label: Page Title
+        type: string
+      - name: content_paragraphs
+        label: Content
+        type: list
+        fields:
+          - name: paragraph
+            label: Text Block
+            type: text
+
+  - name: articles
+    label: Articles Page
+    type: file
+    path: content/articles.json
+    format: json
+    fields:
+      - name: title
+        label: Page Title
+        type: string
+      - name: articles
+        label: Articles List
+        type: list
+        item_label: title
+        fields:
+          - name: id
+            label: URL Slug (ID)
+            type: string
+            required: true
+          - name: title
+            label: Title
+            type: string
+            required: true
+          - name: authors
+            label: Authors
+            type: string
+          - name: date
+            label: Date
+            type: date
+          - name: abstract
+            label: Abstract
+            type: text
+          - name: introduction
+            label: Introduction
+            type: rich-text
+          - name: methods
+            label: Methods
+            type: rich-text
+          - name: results
+            label: Results
+            type: rich-text
+          - name: discussion
+            label: Discussion
+            type: rich-text
+          - name: conclusion
+            label: Conclusion
+            type: rich-text
+          - name: references
+            label: References
             type: list
-            item_label: label
             fields:
-              - name: label
-                label: Menu Label
+              - name: citation
                 type: string
-              - name: url
-                label: Page URL (e.g. index.html)
-                type: string
-          - name: footer_rights
-            label: Footer Text
-            type: string
-      - name: home
-        label: Home Page Header
-        type: object
-        fields:
-          - name: hero_title
-            label: Main Headline
-            type: string
-          - name: hero_subtitle
-            label: Subtitle Description
-            type: string
-          - name: cta_button
-            label: Button Text
-            type: string
-      - name: about
-        label: About Page Content
-        type: object
+
+  - name: awards
+    label: Awards Page
+    type: file
+    path: content/awards.json
+    format: json
+    fields:
+      - name: title
+        label: Page Title
+        type: string
+      - name: awards_list
+        label: Awards
+        type: list
+        item_label: title
         fields:
           - name: title
-            label: Page Title
+            label: Award Title
             type: string
-          - name: content_paragraphs
-            label: About Me Text Blocks
-            type: list
-            fields:
-              - name: paragraph
-                label: Text Paragraph
-                type: text
-      - name: awards
-        label: Awards Page Content
+          - name: description
+            label: Description
+            type: string
+
+  - name: contact
+    label: Contact Page
+    type: file
+    path: content/contact.json
+    format: json
+    fields:
+      - name: title
+        label: Page Title
+        type: string
+      - name: form
+        label: For Labels
         type: object
         fields:
-          - name: title
-            label: Page Title
+          - name: name_label
             type: string
-          - name: awards_list
-            label: Awards List
-            type: list
-            item_label: title
-            fields:
-              - name: title
-                label: Award Name
-                type: string
-              - name: description
-                label: Description
-                type: string
-      - name: contact
-        label: Contact Page Content
-        type: object
-        fields:
-          - name: title
-            label: Page Title
+          - name: email_label
             type: string
-          - name: form
-            label: Form Labels
-            type: object
-            fields:
-              - name: name_label
-                type: string
-              - name: email_label
-                type: string
-              - name: message_label
-                type: string
-              - name: submit_btn
-                type: string
-      - name: articles_page
-        label: Articles Management
-        type: object
-        fields:
-            - name: title
-              label: Articles Page Title
-              type: string
-            - name: articles
-              label: All Articles
-              type: list
-              item_label: title
-              fields:
-                - name: id
-                  label: URL Slug (Unique ID)
-                  type: string
-                  required: true
-                  description: "Use lowercase, no spaces (e.g. 'my-new-study')"
-                - name: title
-                  label: Article Title
-                  type: string
-                  required: true
-                - name: authors
-                  label: Authors
-                  type: string
-                - name: date
-                  label: Publish Date
-                  type: date
-                - name: abstract
-                  label: Abstract Summary
-                  type: text
-                - name: introduction
-                  label: 1. Introduction
-                  type: rich-text
-                - name: methods
-                  label: 2. Methods
-                  type: rich-text
-                - name: results
-                  label: 3. Results
-                  type: rich-text
-                - name: discussion
-                  label: 4. Discussion
-                  type: rich-text
-                - name: conclusion
-                  label: 5. Conclusion
-                  type: rich-text
-                - name: references
-                  label: References List
-                  type: list
-                  fields:
-                    - name: citation
-                      type: string
+          - name: message_label
+            type: string
+          - name: submit_btn
+            type: string
