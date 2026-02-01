@@ -3,7 +3,7 @@ media:
   output: img
 content:
   - name: global
-    label: Global Settings (Menu/Footer)
+    label: Global Settings (Menu/Titles)
     type: file
     path: content/global.json
     format: json
@@ -11,6 +11,16 @@ content:
       - name: logo_alt
         label: Logo Alt Text
         type: string
+      - name: titles
+        label: Page Titles
+        type: object
+        fields:
+          - name: articles
+            label: Articles Page Title
+            type: string
+          - name: awards
+            label: Awards Page Title
+            type: string
       - name: nav
         label: Navigation Menu
         type: list
@@ -60,78 +70,66 @@ content:
             type: text
 
   - name: articles
-    label: Articles Page
+    label: Articles List
     type: file
     path: content/articles.json
     format: json
+    list: true
+    item_label: title
     fields:
-      - name: title
-        label: Page Title
+      - name: id
+        label: URL Slug (ID)
         type: string
-      - name: articles
-        label: Articles List
+        required: true
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: authors
+        label: Authors
+        type: string
+      - name: date
+        label: Date
+        type: date
+      - name: abstract
+        label: Abstract
+        type: text
+      - name: introduction
+        label: Introduction
+        type: rich-text
+      - name: methods
+        label: Methods
+        type: rich-text
+      - name: results
+        label: Results
+        type: rich-text
+      - name: discussion
+        label: Discussion
+        type: rich-text
+      - name: conclusion
+        label: Conclusion
+        type: rich-text
+      - name: references
+        label: References
         type: list
-        item_label: title
         fields:
-          - name: id
-            label: URL Slug (ID)
+          - name: citation
             type: string
-            required: true
-          - name: title
-            label: Title
-            type: string
-            required: true
-          - name: authors
-            label: Authors
-            type: string
-          - name: date
-            label: Date
-            type: date
-          - name: abstract
-            label: Abstract
-            type: text
-          - name: introduction
-            label: Introduction
-            type: rich-text
-          - name: methods
-            label: Methods
-            type: rich-text
-          - name: results
-            label: Results
-            type: rich-text
-          - name: discussion
-            label: Discussion
-            type: rich-text
-          - name: conclusion
-            label: Conclusion
-            type: rich-text
-          - name: references
-            label: References
-            type: list
-            fields:
-              - name: citation
-                type: string
 
   - name: awards
-    label: Awards Page
+    label: Awards List
     type: file
     path: content/awards.json
     format: json
+    list: true
+    item_label: title
     fields:
       - name: title
-        label: Page Title
+        label: Award Title
         type: string
-      - name: awards_list
-        label: Awards
-        type: list
-        item_label: title
-        fields:
-          - name: title
-            label: Award Title
-            type: string
-          - name: description
-            label: Description
-            type: string
+      - name: description
+        label: Description
+        type: string
 
   - name: contact
     label: Contact Page
