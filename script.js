@@ -84,21 +84,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 const footerRights = document.getElementById('footer-rights');
                 if (footerRights) footerRights.textContent = data.common.footer_rights;
 
-                // Navigation (find links by strict href match)
-                const navMap = {
-                    'index.html': data.common.nav.home,
-                    'about.html': data.common.nav.about,
-                    'articles.html': data.common.nav.articles,
-                    'awards.html': data.common.nav.awards,
-                    'contact.html': data.common.nav.contact
-                };
+                // Dynamic Navigation
+                if (data.common.nav && Array.isArray(data.common.nav)) {
+                    const navContainers = document.querySelectorAll('.nav-links');
+                    navContainers.forEach(nav => {
+                        nav.innerHTML = data.common.nav.map(item =>
+                            `<li><a href="${item.url}">${item.label}</a></li>`
+                        ).join('');
 
-                document.querySelectorAll('.nav-links a').forEach(link => {
-                    const href = link.getAttribute('href');
-                    if (navMap[href]) {
-                        link.textContent = navMap[href];
-                    }
-                });
+                        // Re-attach event listeners for mobile menu closing if needed
+                        nav.querySelectorAll('a').forEach(link => {
+                            link.addEventListener('click', () => {
+                                const hamburger = document.querySelector('.hamburger');
+                                if (hamburger) hamburger.classList.remove('active');
+                                nav.classList.remove('active');
+                            });
+                        });
+                    });
+                }
             }
 
             // Populate Home
