@@ -1,0 +1,26 @@
+{
+    "logo_alt": "Personal Logo",
+    "nav": [
+        {
+            "label": "Home",
+            "url": "index.html"
+        },
+        {
+            "label": "About",
+            "url": "about.html"
+        },
+        {
+            "label": "Articles",
+            "url": "articles.html"
+        },
+        {
+            "label": "Awards",
+            "url": "awards.html"
+        },
+        {
+            "label": "Contact",
+            "url": "contact.html"
+        }
+    ],
+    "footer_rights": "GY LIM. All Rights Reserved."
+}

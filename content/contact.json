@@ -1,0 +1,9 @@
+{
+    "title": "Contact Me",
+    "form": {
+        "name_label": "Name",
+        "email_label": "Email",
+        "message_label": "Message",
+        "submit_btn": "Send Message"
+    }
+}
