@@ -100,7 +100,7 @@ content:
               - name: submit_btn
                 type: string
       - name: articles
-        label: Medical Articles
+        label: My Articles
         type: list
         item_label: title
         fields:
