@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Smooth scrolling for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
-            // Only smooth scroll if it's an anchor on the same page
             const targetId = this.getAttribute('href');
             if (targetId.startsWith('#')) {
                 e.preventDefault();
@@ -45,24 +44,21 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                observer.unobserve(entry.target); // Only animate once
+                observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
 
-    // 4. Select items to animate
     const itemsToAnimate = document.querySelectorAll(
         '.hero-text, .hero-image, .section-title, .about-grid, .project-card, .contact-form'
     );
 
-    // 5. Initialize animation state
     itemsToAnimate.forEach(el => {
-        el.classList.add('fade-in'); // Add initial hidden state
-        observer.observe(el);        // Start watching
+        el.classList.add('fade-in');
+        observer.observe(el);
     });
 
-
-    // 6. Auto-update footer year
+    // 4. Auto-update footer year
     const yearElement = document.getElementById('year');
     if (yearElement) {
         const currentYear = new Date().getFullYear();
@@ -74,53 +70,79 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 7. Load Content from data.json (CMS-like behavior)
-    fetch('data.json')
-        .then(response => response.json())
-        .then(data => {
-            // Populate Common Elements (Nav & Footer)
-            if (data.common) {
-                // Footer
-                const footerRights = document.getElementById('footer-rights');
-                if (footerRights) footerRights.textContent = data.common.footer_rights;
+    // 5. Load Distributed Content (Split JSONs)
 
-                // Dynamic Navigation
-                if (data.common.nav && Array.isArray(data.common.nav)) {
-                    const navContainers = document.querySelectorAll('.nav-links');
-                    navContainers.forEach(nav => {
-                        nav.innerHTML = data.common.nav.map(item =>
-                            `<li><a href="${item.url}">${item.label}</a></li>`
-                        ).join('');
+    // Helper function to load JSON
+    const loadJSON = async (path) => {
+        try {
+            const response = await fetch(path);
+            if (!response.ok) throw new Error(`Failed to load ${path}`);
+            return await response.json();
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
+    };
 
-                        // Re-attach event listeners for mobile menu closing if needed
-                        nav.querySelectorAll('a').forEach(link => {
-                            link.addEventListener('click', () => {
-                                const hamburger = document.querySelector('.hamburger');
-                                if (hamburger) hamburger.classList.remove('active');
-                                nav.classList.remove('active');
-                            });
-                        });
+    // Load Global Settings (Nav, Footer)
+    loadJSON('content/global.json').then(data => {
+        if (!data) return;
+
+        // Footer
+        const footerRights = document.getElementById('footer-rights');
+        if (footerRights) footerRights.textContent = data.footer_rights;
+
+        // Dynamic Navigation
+        if (data.nav && Array.isArray(data.nav)) {
+            const navContainers = document.querySelectorAll('.nav-links');
+            navContainers.forEach(nav => {
+                // Get current Page URL for active state if needed, simpler to just list matches
+                nav.innerHTML = data.nav.map(item =>
+                    `<li><a href="${item.url}">${item.label}</a></li>`
+                ).join('');
+
+                nav.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (hamburger) hamburger.classList.remove('active');
+                        if (navLinks) navLinks.classList.remove('active');
                     });
-                }
-            }
+                });
+            });
+        }
+    });
 
-            // Populate Home
-            if (document.getElementById('hero-title')) document.getElementById('hero-title').innerHTML = data.home.hero_title;
-            if (document.getElementById('hero-subtitle')) document.getElementById('hero-subtitle').textContent = data.home.hero_subtitle;
-            if (document.getElementById('hero-cta')) document.getElementById('hero-cta').textContent = data.home.cta_button;
+    // Identify current page content needs and load specific JSONs
 
-            // Populate About
-            if (document.getElementById('about-title')) document.getElementById('about-title').textContent = data.about.title;
+    // Home Content
+    if (document.getElementById('hero-title')) {
+        loadJSON('content/home.json').then(data => {
+            if (!data) return;
+            document.getElementById('hero-title').innerHTML = data.hero_title;
+            document.getElementById('hero-subtitle').textContent = data.hero_subtitle;
+            document.getElementById('hero-cta').textContent = data.cta_button;
+        });
+    }
+
+    // About Content
+    if (document.getElementById('about-title')) {
+        loadJSON('content/about.json').then(data => {
+            if (!data) return;
+            document.getElementById('about-title').textContent = data.title;
             const aboutText = document.getElementById('about-text');
-            if (aboutText) {
-                aboutText.innerHTML = data.about.content_paragraphs.map(p => `<p>${p}</p>`).join('<br>');
+            if (aboutText && data.content_paragraphs) {
+                aboutText.innerHTML = data.content_paragraphs.map(p => `<p>${p}</p>`).join('<br>');
             }
+        });
+    }
 
-            // Populate Awards
-            if (document.getElementById('awards-title')) document.getElementById('awards-title').textContent = data.awards.title;
+    // Awards Content
+    if (document.getElementById('awards-title')) {
+        loadJSON('content/awards.json').then(data => {
+            if (!data) return;
+            document.getElementById('awards-title').textContent = data.title;
             const awardsGrid = document.getElementById('awards-grid');
-            if (awardsGrid && data.awards.awards_list) {
-                awardsGrid.innerHTML = data.awards.awards_list.map(award => `
+            if (awardsGrid && data.awards_list) {
+                awardsGrid.innerHTML = data.awards_list.map(award => `
                     <div class="project-card fade-in">
                         <div class="project-info">
                             <h3>${award.title}</h3>
@@ -128,29 +150,43 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
                 `).join('');
-
-                // Re-observe new elements for animation
                 document.querySelectorAll('.project-card').forEach(el => observer.observe(el));
             }
+        });
+    }
 
-            // Populate Contact
-            if (document.getElementById('contact-title')) document.getElementById('contact-title').textContent = data.contact.title;
+    // Contact Content
+    if (document.getElementById('contact-title')) {
+        loadJSON('content/contact.json').then(data => {
+            if (!data) return;
+            document.getElementById('contact-title').textContent = data.title;
+            // Could also map labels here if added IDs to labels
+        });
+    }
 
-            // Populate Articles List
-            const articleList = document.getElementById('article-list');
-            if (articleList && data.articles) {
-                articleList.innerHTML = data.articles.map(article => `
-                    <a href="article-view.html?id=${article.id}" class="article-card fade-in">
-                        <h3>${article.title}</h3>
-                        <span class="article-meta">${article.date} | ${article.authors}</span>
-                        <div class="article-abstract">${article.abstract}</div>
-                        <span class="read-more">Read Full Article &rarr;</span>
-                    </a>
-                `).join('');
-                document.querySelectorAll('.article-card').forEach(el => observer.observe(el));
+    // Articles List & View (Both use articles.json)
+    if (document.getElementById('articles-title') || document.getElementById('article-content')) {
+        loadJSON('content/articles.json').then(data => {
+            if (!data) return;
+
+            // List View
+            if (document.getElementById('articles-title')) {
+                document.getElementById('articles-title').textContent = data.title;
+                const articleList = document.getElementById('article-list');
+                if (articleList && data.articles) {
+                    articleList.innerHTML = data.articles.map(article => `
+                        <a href="article-view.html?id=${article.id}" class="article-card fade-in">
+                            <h3>${article.title}</h3>
+                            <span class="article-meta">${article.date} | ${article.authors}</span>
+                            <div class="article-abstract">${article.abstract}</div>
+                            <span class="read-more">Read Full Article &rarr;</span>
+                        </a>
+                    `).join('');
+                    document.querySelectorAll('.article-card').forEach(el => observer.observe(el));
+                }
             }
 
-            // Populate Single Article View
+            // Single View
             const articleContent = document.getElementById('article-content');
             if (articleContent) {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -175,7 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             </section>
                         `;
 
-                        // Dynamically add sections if they exist and are not empty
                         sections.forEach(sec => {
                             const content = article[sec.toLowerCase()];
                             if (content && content.trim() !== "") {
@@ -188,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         });
 
-                        // References
                         if (article.references && article.references.length > 0) {
                             html += `
                                 <section class="article-section fade-in">
@@ -199,10 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </section>
                             `;
                         }
-
                         articleContent.innerHTML = html;
-
-                        // Observe new elements
                         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
                     } else {
                         articleContent.innerHTML = '<p>Article not found.</p>';
@@ -211,7 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     articleContent.innerHTML = '<p>No article specified.</p>';
                 }
             }
-
-        })
-        .catch(error => console.error('Error loading content:', error));
+        });
+    }
 });
