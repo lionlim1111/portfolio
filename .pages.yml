@@ -99,46 +99,53 @@ content:
                 type: string
               - name: submit_btn
                 type: string
-      - name: articles
-        label: My Articles
-        type: list
-        item_label: title
+      - name: articles_page
+        label: Articles Page
+        type: object
         fields:
-          - name: id
-            label: ID (Unique URL slug)
-            type: string
-            required: true
-          - name: title
-            label: Title
-            type: string
-            required: true
-          - name: authors
-            label: Authors
-            type: string
-          - name: date
-            label: Publish Date
-            type: date
-          - name: abstract
-            label: Abstract
-            type: text
-          - name: introduction
-            label: Introduction
-            type: rich-text
-          - name: methods
-            label: Methods
-            type: rich-text
-          - name: results
-            label: Results
-            type: rich-text
-          - name: discussion
-            label: Discussion
-            type: rich-text
-          - name: conclusion
-            label: Conclusion
-            type: rich-text
-          - name: references
-            label: References
-            type: list
-            fields:
-              - name: citation
-                type: string
+            - name: title
+              label: Page Title
+              type: string
+            - name: articles
+              label: Articles List
+              type: list
+              item_label: title
+              fields:
+                - name: id
+                  label: ID (Unique URL slug)
+                  type: string
+                  required: true
+                - name: title
+                  label: Title
+                  type: string
+                  required: true
+                - name: authors
+                  label: Authors
+                  type: string
+                - name: date
+                  label: Publish Date
+                  type: date
+                - name: abstract
+                  label: Abstract
+                  type: text
+                - name: introduction
+                  label: Introduction
+                  type: rich-text
+                - name: methods
+                  label: Methods
+                  type: rich-text
+                - name: results
+                  label: Results
+                  type: rich-text
+                - name: discussion
+                  label: Discussion
+                  type: rich-text
+                - name: conclusion
+                  label: Conclusion
+                  type: rich-text
+                - name: references
+                  label: References
+                  type: list
+                  fields:
+                    - name: citation
+                      type: string
