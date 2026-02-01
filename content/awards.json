@@ -1,17 +1,14 @@
-{
-    "title": "Honors & Awards",
-    "awards_list": [
-        {
-            "title": "Project Alpha",
-            "description": "A comprehensive study on clinical data efficiency."
-        },
-        {
-            "title": "Project Beta",
-            "description": "Strategic medical device implementation plan."
-        },
-        {
-            "title": "Project Gamma",
-            "description": "Professional consultation framework development."
-        }
-    ]
-}
+[
+    {
+        "title": "Project Alpha",
+        "description": "A comprehensive study on clinical data efficiency."
+    },
+    {
+        "title": "Project Beta",
+        "description": "Strategic medical device implementation plan."
+    },
+    {
+        "title": "Project Gamma",
+        "description": "Professional consultation framework development."
+    }
+]
