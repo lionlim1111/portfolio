@@ -265,10 +265,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         articleContent.innerHTML = html;
                         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
                     } else {
-                        articleContent.innerHTML = '<p>Article not found.</p>';
+                        articleContent.innerHTML = '<div class="empty-state">Article not found.</div>';
                     }
                 } else {
-                    articleContent.innerHTML = '<p>No article specified.</p>';
+                    articleContent.innerHTML = '<div class="empty-state">No article specified.</div>';
                 }
             }
         });
