@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Load Global Settings (Nav, Footer)
+    // Load Global Settings (Nav, Footer, Titles)
     loadJSON('content/global.json').then(data => {
         if (!data) return;
 
@@ -92,11 +92,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const footerRights = document.getElementById('footer-rights');
         if (footerRights) footerRights.textContent = data.footer_rights;
 
+        // Page Titles (if placeholders exist)
+        if (data.titles) {
+            if (document.getElementById('articles-title'))
+                document.getElementById('articles-title').textContent = data.titles.articles;
+            if (document.getElementById('awards-title'))
+                document.getElementById('awards-title').textContent = data.titles.awards;
+        }
+
         // Dynamic Navigation
         if (data.nav && Array.isArray(data.nav)) {
             const navContainers = document.querySelectorAll('.nav-links');
             navContainers.forEach(nav => {
-                // Get current Page URL for active state if needed, simpler to just list matches
                 nav.innerHTML = data.nav.map(item =>
                     `<li><a href="${item.url}">${item.label}</a></li>`
                 ).join('');
@@ -135,23 +142,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Awards Content
-    if (document.getElementById('awards-title')) {
+    // Awards Content (Root Array now)
+    if (document.getElementById('awards-grid')) {
         loadJSON('content/awards.json').then(data => {
-            if (!data) return;
-            document.getElementById('awards-title').textContent = data.title;
+            if (!data || !Array.isArray(data)) return;
+
             const awardsGrid = document.getElementById('awards-grid');
-            if (awardsGrid && data.awards_list) {
-                awardsGrid.innerHTML = data.awards_list.map(award => `
-                    <div class="project-card fade-in">
-                        <div class="project-info">
-                            <h3>${award.title}</h3>
-                            <p>${award.description}</p>
-                        </div>
+            awardsGrid.innerHTML = data.map(award => `
+                <div class="project-card fade-in">
+                    <div class="project-info">
+                        <h3>${award.title}</h3>
+                        <p>${award.description}</p>
                     </div>
-                `).join('');
-                document.querySelectorAll('.project-card').forEach(el => observer.observe(el));
-            }
+                </div>
+            `).join('');
+            document.querySelectorAll('.project-card').forEach(el => observer.observe(el));
         });
     }
 
@@ -160,30 +165,26 @@ document.addEventListener('DOMContentLoaded', () => {
         loadJSON('content/contact.json').then(data => {
             if (!data) return;
             document.getElementById('contact-title').textContent = data.title;
-            // Could also map labels here if added IDs to labels
         });
     }
 
-    // Articles List & View (Both use articles.json)
-    if (document.getElementById('articles-title') || document.getElementById('article-content')) {
+    // Articles List & View (Root Array now)
+    if (document.getElementById('article-list') || document.getElementById('article-content')) {
         loadJSON('content/articles.json').then(data => {
-            if (!data) return;
+            if (!data || !Array.isArray(data)) return;
 
             // List View
-            if (document.getElementById('articles-title')) {
-                document.getElementById('articles-title').textContent = data.title;
+            if (document.getElementById('article-list')) {
                 const articleList = document.getElementById('article-list');
-                if (articleList && data.articles) {
-                    articleList.innerHTML = data.articles.map(article => `
-                        <a href="article-view.html?id=${article.id}" class="article-card fade-in">
-                            <h3>${article.title}</h3>
-                            <span class="article-meta">${article.date} | ${article.authors}</span>
-                            <div class="article-abstract">${article.abstract}</div>
-                            <span class="read-more">Read Full Article &rarr;</span>
-                        </a>
-                    `).join('');
-                    document.querySelectorAll('.article-card').forEach(el => observer.observe(el));
-                }
+                articleList.innerHTML = data.map(article => `
+                    <a href="article-view.html?id=${article.id}" class="article-card fade-in">
+                        <h3>${article.title}</h3>
+                        <span class="article-meta">${article.date} | ${article.authors}</span>
+                        <div class="article-abstract">${article.abstract}</div>
+                        <span class="read-more">Read Full Article &rarr;</span>
+                    </a>
+                `).join('');
+                document.querySelectorAll('.article-card').forEach(el => observer.observe(el));
             }
 
             // Single View
@@ -192,8 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const urlParams = new URLSearchParams(window.location.search);
                 const articleId = urlParams.get('id');
 
-                if (articleId && data.articles) {
-                    const article = data.articles.find(a => a.id === articleId);
+                if (articleId) {
+                    const article = data.find(a => a.id === articleId);
                     if (article) {
                         const sections = ['Introduction', 'Methods', 'Results', 'Discussion', 'Conclusion'];
                         let html = `
