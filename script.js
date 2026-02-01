@@ -145,9 +145,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Awards Content (Root Array now)
     if (document.getElementById('awards-grid')) {
         loadJSON('content/awards.json').then(data => {
-            if (!data || !Array.isArray(data)) return;
-
             const awardsGrid = document.getElementById('awards-grid');
+
+            if (!data || !Array.isArray(data) || data.length === 0) {
+                awardsGrid.innerHTML = '<p>No awards found.</p>';
+                return;
+            }
+
             awardsGrid.innerHTML = data.map(award => `
                 <div class="project-card fade-in">
                     <div class="project-info">
@@ -176,15 +180,20 @@ document.addEventListener('DOMContentLoaded', () => {
             // List View
             if (document.getElementById('article-list')) {
                 const articleList = document.getElementById('article-list');
-                articleList.innerHTML = data.map(article => `
-                    <a href="article-view.html?id=${article.id}" class="article-card fade-in">
-                        <h3>${article.title}</h3>
-                        <span class="article-meta">${article.date} | ${article.authors}</span>
-                        <div class="article-abstract">${article.abstract}</div>
-                        <span class="read-more">Read Full Article &rarr;</span>
-                    </a>
-                `).join('');
-                document.querySelectorAll('.article-card').forEach(el => observer.observe(el));
+
+                if (!data || !Array.isArray(data) || data.length === 0) {
+                    articleList.innerHTML = '<p>No articles found.</p>';
+                } else {
+                    articleList.innerHTML = data.map(article => `
+                        <a href="article-view.html?id=${article.id}" class="article-card fade-in">
+                            <h3>${article.title}</h3>
+                            <span class="article-meta">${article.date} | ${article.authors}</span>
+                            <div class="article-abstract">${article.abstract}</div>
+                            <span class="read-more">Read Full Article &rarr;</span>
+                        </a>
+                    `).join('');
+                    document.querySelectorAll('.article-card').forEach(el => observer.observe(el));
+                }
             }
 
             // Single View
