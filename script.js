@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const awardsGrid = document.getElementById('awards-grid');
 
             if (!data || !Array.isArray(data) || data.length === 0) {
-                awardsGrid.innerHTML = '<p>No Honor & Rewards Published</p>';
+                awardsGrid.innerHTML = '<div class="empty-state">No Honor & Rewards Published</div>';
                 return;
             }
 
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const articleList = document.getElementById('article-list');
 
                 if (!data || !Array.isArray(data) || data.length === 0) {
-                    articleList.innerHTML = '<p>No Articles Published</p>';
+                    articleList.innerHTML = '<div class="empty-state">No Articles Published</div>';
                 } else {
                     articleList.innerHTML = data.map(article => `
                         <a href="article-view.html?id=${article.id}" class="article-card fade-in">
