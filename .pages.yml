@@ -1,0 +1,144 @@
+media:
+  input: img
+  output: img
+content:
+  - name: settings
+    label: Site Content
+    type: file
+    path: data.json
+    format: json
+    fields:
+      - name: common
+        label: Common Settings
+        type: object
+        fields:
+          - name: logo_alt
+            label: Logo Alt Text
+            type: string
+          - name: nav
+            label: Navigation Labels
+            type: object
+            fields:
+              - name: home
+                label: Home Link
+                type: string
+              - name: about
+                label: About Link
+                type: string
+              - name: articles
+                label: Articles Link
+                type: string
+              - name: awards
+                label: Awards Link
+                type: string
+              - name: contact
+                label: Contact Link
+                type: string
+          - name: footer_rights
+            label: Footer Text
+            type: string
+      - name: home
+        label: Home Page
+        type: object
+        fields:
+          - name: hero_title
+            label: Hero Title
+            type: string
+          - name: hero_subtitle
+            label: Hero Subtitle
+            type: string
+          - name: cta_button
+            label: CTA Button Text
+            type: string
+      - name: about
+        label: About Page
+        type: object
+        fields:
+          - name: title
+            label: Title
+            type: string
+          - name: content_paragraphs
+            label: Paragraphs
+            type: list
+            fields:
+              - name: paragraph
+                type: text
+      - name: awards
+        label: Awards Page
+        type: object
+        fields:
+          - name: title
+            label: Title
+            type: string
+          - name: awards_list
+            label: Awards List
+            type: list
+            fields:
+              - name: title
+                label: Award Title
+                type: string
+              - name: description
+                label: Award Description
+                type: string
+      - name: contact
+        label: Contact Page
+        type: object
+        fields:
+          - name: title
+            label: Title
+            type: string
+          - name: form
+            label: Form Labels
+            type: object
+            fields:
+              - name: name_label
+                type: string
+              - name: email_label
+                type: string
+              - name: message_label
+                type: string
+              - name: submit_btn
+                type: string
+      - name: articles
+        label: Medical Articles
+        type: list
+        item_label: title
+        fields:
+          - name: id
+            label: ID (Unique URL slug)
+            type: string
+            required: true
+          - name: title
+            label: Title
+            type: string
+            required: true
+          - name: authors
+            label: Authors
+            type: string
+          - name: date
+            label: Publish Date
+            type: date
+          - name: abstract
+            label: Abstract
+            type: text
+          - name: introduction
+            label: Introduction
+            type: rich-text
+          - name: methods
+            label: Methods
+            type: rich-text
+          - name: results
+            label: Results
+            type: rich-text
+          - name: discussion
+            label: Discussion
+            type: rich-text
+          - name: conclusion
+            label: Conclusion
+            type: rich-text
+          - name: references
+            label: References
+            type: list
+            fields:
+              - name: citation
+                type: string
