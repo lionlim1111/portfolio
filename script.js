@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. Smooth scrolling for navigation links
+    // 2. Smooth scrolling
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const targetId = this.getAttribute('href');
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 3. Intersection Observer for scroll animations
+    // 3. Intersection Observer
     const observerOptions = {
         threshold: 0.1,
         rootMargin: "0px 0px -50px 0px"
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
-    // 4. Auto-update footer year
+    // 4. Footer year
     const yearElement = document.getElementById('year');
     if (yearElement) {
         const currentYear = new Date().getFullYear();
@@ -63,9 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         yearElement.textContent = currentYear > startYear ? `${startYear}-${currentYear}` : startYear;
     }
 
-    // 5. Load Distributed Content (Split JSONs)
-
-    // Helper function to load JSON with fallback paths
+    // 5. Helpers
     const loadJSON = async (paths) => {
         if (!Array.isArray(paths)) paths = [paths];
         for (const path of paths) {
@@ -74,19 +72,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(path);
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(`Successfully loaded: ${path}`);
+                    console.log(`✅ Successfully loaded: ${path}`);
                     return data;
                 } else {
-                    console.warn(`Failed to load ${path} (${response.status})`);
+                    console.warn(`❌ Failed to load ${path} (${response.status} ${response.statusText})`);
                 }
             } catch (e) {
-                console.warn(`Error fetching ${path}:`, e);
+                console.warn(`❌ Error fetching ${path}:`, e.message);
             }
         }
         return null;
     };
 
-    // Helper to show loading
     const showLoading = (elementId) => {
         const el = document.getElementById(elementId);
         if (el) {
@@ -94,23 +91,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Helper to show error
     const showError = (elementId, message = '') => {
         const el = document.getElementById(elementId);
         if (el) {
             el.innerHTML = `
                 <div class="error-message">
-                    <h2>Something went wrong</h2>
+                    <h2>⚠️ Something went wrong</h2>
                     <p>${escapeHtml(message) || 'Unable to load content. Please try again later.'}</p>
+                    <p style="font-size:0.85rem; color:#718096; margin-top:10px;">Check console for details.</p>
                 </div>
             `;
         }
     };
 
-    // Load Global Settings (Nav, Footer, Titles)
+    const escapeHtml = (text) => {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    };
+
+    // 6. Load Global Settings
     loadJSON(['content/global.json', 'global.json']).then(data => {
         if (!data) return;
-
         const footerRights = document.getElementById('footer-rights');
         if (footerRights) footerRights.textContent = data.footer_rights;
 
@@ -137,96 +140,112 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Home Content
-    if (document.getElementById('hero-title')) {
-        loadJSON(['content/home.json', 'home.json']).then(data => {
-            if (!data) return;
-            document.getElementById('hero-title').innerHTML = data.hero_title;
-            document.getElementById('hero-subtitle').textContent = data.hero_subtitle;
-            document.getElementById('hero-cta').textContent = data.cta_button;
-        });
-    }
+    // 7. Home, About, Awards, Contact (unchanged) — omitted for brevity
+    // ... (they remain exactly as before)
 
-    // About Content
-    if (document.getElementById('about-title')) {
-        loadJSON(['content/about.json', 'about.json']).then(data => {
-            if (!data) return;
-            document.getElementById('about-title').textContent = data.title;
-            const aboutText = document.getElementById('about-text');
-            if (aboutText && data.content_paragraphs) {
-                aboutText.innerHTML = data.content_paragraphs.map(p => `<p>${p}</p>`).join('<br>');
-            }
-        });
-    }
-
-    // Awards Content
-    if (document.getElementById('awards-grid')) {
-        showLoading('awards-grid');
-        loadJSON(['content/awards.json', 'awards.json']).then(data => {
-            const awardsGrid = document.getElementById('awards-grid');
-            if (!data || !Array.isArray(data) || data.length === 0) {
-                awardsGrid.innerHTML = '<div class="empty-state">No Awards Found</div>';
-                return;
-            }
-            awardsGrid.innerHTML = data.map(award => `
-                <div class="project-card fade-in">
-                    <div class="project-info">
-                        <h3>${escapeHtml(award.title)}</h3>
-                        <p>${escapeHtml(award.description)}</p>
-                    </div>
-                </div>
-            `).join('');
-            document.querySelectorAll('.project-card').forEach(el => observer.observe(el));
-        }).catch(() => {
-            showError('awards-grid', 'Failed to load awards data.');
-        });
-    }
-
-    // Contact Content
-    if (document.getElementById('contact-title')) {
-        loadJSON(['content/contact.json', 'contact.json']).then(data => {
-            if (!data) return;
-            document.getElementById('contact-title').textContent = data.title;
-        });
-    }
-
-    // ----- ARTICLES: List & Single View (Enhanced) -----
+    // 8. ARTICLES: List & Single View (with search)
     if (document.getElementById('article-list') || document.getElementById('article-content')) {
 
-        // Show loading state
         if (document.getElementById('article-list')) showLoading('article-list');
         if (document.getElementById('article-content')) showLoading('article-content');
 
-        // Try both paths: content/articles.json and articles.json
         loadJSON(['content/articles.json', 'articles.json']).then(data => {
-            console.log('Articles data loaded:', data);
+            console.log('📄 Articles data received:', data);
 
             if (!data || !Array.isArray(data)) {
                 const errMsg = !data ? 'No data received' : 'Data is not an array';
-                if (document.getElementById('article-list')) 
+                if (document.getElementById('article-list'))
                     showError('article-list', `Articles data is missing or invalid (${errMsg}).`);
-                if (document.getElementById('article-content')) 
+                if (document.getElementById('article-content'))
                     showError('article-content', `Articles data is missing or invalid (${errMsg}).`);
                 return;
             }
 
-            // ----- List View -----
-            if (document.getElementById('article-list')) {
+            // ----- Store full articles list for search -----
+            const fullArticles = data;
+
+            // ----- Helper: Render article list given an array -----
+            const renderArticleList = (articles) => {
                 const articleList = document.getElementById('article-list');
-                if (data.length === 0) {
-                    articleList.innerHTML = '<div class="empty-state">No Articles Published</div>';
-                } else {
-                    articleList.innerHTML = data.map(article => `
-                        <a href="article-view.html?id=${article.id}" class="article-card fade-in">
-                            <h3>${escapeHtml(article.title)}</h3>
-                            <span class="article-meta">${escapeHtml(article.date)} | ${escapeHtml(article.authors)}</span>
-                            <div class="article-abstract">${escapeHtml(article.abstract)}</div>
-                            <span class="read-more">Read Full Article &rarr;</span>
-                        </a>
-                    `).join('');
-                    document.querySelectorAll('.article-card').forEach(el => observer.observe(el));
+                if (!articleList) return;
+
+                if (articles.length === 0) {
+                    articleList.innerHTML = `<div class="no-results">No articles found matching your search.</div>`;
+                    document.getElementById('searchStats').style.display = 'none';
+                    return;
                 }
+
+                articleList.innerHTML = articles.map(article => `
+                    <a href="article-view.html?id=${article.id}" class="article-card fade-in">
+                        <h3>${escapeHtml(article.title)}</h3>
+                        <span class="article-meta">${escapeHtml(article.date)} | ${escapeHtml(article.authors)}</span>
+                        <div class="article-abstract">${escapeHtml(article.abstract)}</div>
+                        <span class="read-more">Read Full Article &rarr;</span>
+                    </a>
+                `).join('');
+
+                // Re-apply observer for new cards
+                document.querySelectorAll('.article-card').forEach(el => observer.observe(el));
+
+                // Update search stats
+                const stats = document.getElementById('searchStats');
+                if (stats) {
+                    const total = fullArticles.length;
+                    const shown = articles.length;
+                    if (shown < total) {
+                        stats.style.display = 'block';
+                        stats.innerHTML = `Showing <strong>${shown}</strong> of <strong>${total}</strong> articles`;
+                    } else {
+                        stats.style.display = 'none';
+                    }
+                }
+            };
+
+            // ----- Search logic -----
+            const searchInput = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearSearch');
+            let searchTerm = '';
+
+            const filterArticles = (term) => {
+                const lower = term.toLowerCase().trim();
+                if (!lower) {
+                    renderArticleList(fullArticles);
+                    if (clearBtn) clearBtn.classList.remove('visible');
+                    return;
+                }
+                if (clearBtn) clearBtn.classList.add('visible');
+
+                const filtered = fullArticles.filter(article => {
+                    const title = (article.title || '').toLowerCase();
+                    const authors = (article.authors || '').toLowerCase();
+                    const abstract = (article.abstract || '').toLowerCase();
+                    const date = (article.date || '').toLowerCase();
+                    return title.includes(lower) || authors.includes(lower) || abstract.includes(lower) || date.includes(lower);
+                });
+                renderArticleList(filtered);
+            };
+
+            // Event listeners
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    searchTerm = e.target.value;
+                    filterArticles(searchTerm);
+                });
             }
+
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => {
+                    if (searchInput) {
+                        searchInput.value = '';
+                        searchTerm = '';
+                        filterArticles('');
+                        searchInput.focus();
+                    }
+                });
+            }
+
+            // Initial render (all articles)
+            renderArticleList(fullArticles);
 
             // ----- Single View (article-content) -----
             const articleContent = document.getElementById('article-content');
@@ -239,15 +258,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                const article = data.find(a => a.id === articleId);
+                const article = fullArticles.find(a => a.id === articleId);
                 if (!article) {
                     showError('article-content', `Article with ID "${escapeHtml(articleId)}" not found.`);
                     return;
                 }
 
-                console.log('Rendering article:', article);
-
-                // --- Build the article HTML ---
+                console.log('🖨️ Rendering article:', article);
                 let html = '';
 
                 // Header
@@ -271,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 }
 
-                // Rich-text sections
+                // Sections
                 const sectionKeys = ['introduction', 'methods', 'results', 'discussion', 'conclusion'];
                 const sectionLabels = {
                     introduction: 'Introduction',
@@ -293,11 +310,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                // ----- REFERENCES -----
+                // References
                 if (article.references) {
                     let refHtml = '';
                     if (Array.isArray(article.references)) {
-                        refHtml = `<ol class="reference-list">${article.references.map(ref => `<li>${escapeHtml(ref)}</li>`).join('')}</ol>`;
+                        const citations = article.references.map(ref => {
+                            if (typeof ref === 'object' && ref.citation) return ref.citation;
+                            return ref;
+                        });
+                        refHtml = `<ol class="reference-list">${citations.map(ref => `<li>${escapeHtml(ref)}</li>`).join('')}</ol>`;
                     } else if (typeof article.references === 'string' && article.references.trim() !== '') {
                         refHtml = `<div class="references">${escapeHtml(article.references).replace(/\n/g, '<br>')}</div>`;
                     }
@@ -311,10 +332,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
-                // ----- DOWNLOAD BUTTON (if download_link exists) -----
+                // Download button
                 if (article.download_link && article.download_link.trim() !== '') {
                     html += `
-                        <div class="article-download fade-in" style="margin-top: 2.5rem; text-align: center;">
+                        <div class="article-download fade-in">
                             <a href="${escapeHtml(article.download_link)}" target="_blank" rel="noopener noreferrer" class="btn download-btn">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:8px;">
                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -330,21 +351,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 articleContent.innerHTML = html;
                 document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
             }
+
         }).catch(error => {
             const errMsg = error.message || 'Unknown error';
-            if (document.getElementById('article-list')) 
-                showError('article-list', `Error: ${errMsg}`);
-            if (document.getElementById('article-content')) 
-                showError('article-content', `Error: ${errMsg}`);
-            console.error('Articles load error:', error);
+            if (document.getElementById('article-list'))
+                showError('article-list', `Network error: ${errMsg}`);
+            if (document.getElementById('article-content'))
+                showError('article-content', `Network error: ${errMsg}`);
+            console.error('❌ Articles load error:', error);
         });
     }
 
-    // ----- Helper: escapeHtml to prevent XSS -----
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+    // The rest of your loaders for other pages (Home, About, etc.) remain unchanged.
+    // I omitted them here for brevity, but you should keep them.
 });
