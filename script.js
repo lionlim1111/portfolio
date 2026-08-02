@@ -181,33 +181,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Articles List & View (Root Array now)
+    // ----- ARTICLES: List & Single View (Enhanced) -----
     if (document.getElementById('article-list') || document.getElementById('article-content')) {
 
-        // Show loading state
+        // Show loading state for both possible containers
         if (document.getElementById('article-list')) showLoading('article-list');
         if (document.getElementById('article-content')) showLoading('article-content');
 
         loadJSON('content/articles.json').then(data => {
             if (!data || !Array.isArray(data)) {
                 // Handle global data error for article views
-                if (document.getElementById('article-list')) document.getElementById('article-list').innerHTML = '<div class="empty-state">Error loading articles.</div>';
-                if (document.getElementById('article-content')) document.getElementById('article-content').innerHTML = '<div class="empty-state">Error loading content.</div>';
+                if (document.getElementById('article-list')) 
+                    document.getElementById('article-list').innerHTML = '<div class="empty-state">Error loading articles.</div>';
+                if (document.getElementById('article-content')) 
+                    document.getElementById('article-content').innerHTML = '<div class="empty-state">Error loading content.</div>';
                 return;
             }
 
-            // List View
+            // ----- List View -----
             if (document.getElementById('article-list')) {
                 const articleList = document.getElementById('article-list');
 
-                if (!data || !Array.isArray(data) || data.length === 0) {
+                if (data.length === 0) {
                     articleList.innerHTML = '<div class="empty-state">No Articles Published</div>';
                 } else {
                     articleList.innerHTML = data.map(article => `
                         <a href="article-view.html?id=${article.id}" class="article-card fade-in">
-                            <h3>${article.title}</h3>
-                            <span class="article-meta">${article.date} | ${article.authors}</span>
-                            <div class="article-abstract">${article.abstract}</div>
+                            <h3>${escapeHtml(article.title)}</h3>
+                            <span class="article-meta">${escapeHtml(article.date)} | ${escapeHtml(article.authors)}</span>
+                            <div class="article-abstract">${escapeHtml(article.abstract)}</div>
                             <span class="read-more">Read Full Article &rarr;</span>
                         </a>
                     `).join('');
@@ -215,62 +217,103 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Single View
+            // ----- Single View (article-content) -----
             const articleContent = document.getElementById('article-content');
             if (articleContent) {
                 const urlParams = new URLSearchParams(window.location.search);
                 const articleId = urlParams.get('id');
 
-                if (articleId) {
-                    const article = data.find(a => a.id === articleId);
-                    if (article) {
-                        const sections = ['Introduction', 'Methods', 'Results', 'Discussion', 'Conclusion'];
-                        let html = `
-                            <header class="article-header fade-in">
-                                <h1>${article.title}</h1>
-                                <div class="article-meta">
-                                    <p><strong>Authors:</strong> ${article.authors}</p>
-                                    <p><strong>Published:</strong> ${article.date}</p>
-                                </div>
-                            </header>
-                            
+                if (!articleId) {
+                    articleContent.innerHTML = '<div class="empty-state">No article specified.</div>';
+                    return;
+                }
+
+                const article = data.find(a => a.id === articleId);
+                if (!article) {
+                    articleContent.innerHTML = '<div class="empty-state">Article not found.</div>';
+                    return;
+                }
+
+                // --- Build the article HTML ---
+                let html = '';
+
+                // Header
+                html += `
+                    <header class="article-header fade-in">
+                        <h1>${escapeHtml(article.title)}</h1>
+                        <div class="article-meta">
+                            ${article.authors ? `<p><strong>Authors:</strong> ${escapeHtml(article.authors)}</p>` : ''}
+                            ${article.date ? `<p><strong>Published:</strong> ${escapeHtml(article.date)}</p>` : ''}
+                        </div>
+                    </header>
+                `;
+
+                // Abstract
+                if (article.abstract) {
+                    html += `
+                        <section class="article-section fade-in">
+                            <h2>Abstract</h2>
+                            <div class="abstract-text">${escapeHtml(article.abstract)}</div>
+                        </section>
+                    `;
+                }
+
+                // Rich-text sections: Introduction, Methods, Results, Discussion, Conclusion
+                const sectionKeys = ['introduction', 'methods', 'results', 'discussion', 'conclusion'];
+                const sectionLabels = {
+                    introduction: 'Introduction',
+                    methods: 'Methods',
+                    results: 'Results',
+                    discussion: 'Discussion',
+                    conclusion: 'Conclusion'
+                };
+
+                sectionKeys.forEach(key => {
+                    const content = article[key];
+                    if (content && typeof content === 'string' && content.trim() !== '') {
+                        // Use innerHTML for rich-text (allow HTML tags)
+                        html += `
                             <section class="article-section fade-in">
-                                <h2>Abstract</h2>
-                                <p>${article.abstract}</p>
+                                <h2>${sectionLabels[key]}</h2>
+                                <div class="rich-text">${content}</div>
                             </section>
                         `;
-
-                        sections.forEach(sec => {
-                            const content = article[sec.toLowerCase()];
-                            if (content && content.trim() !== "") {
-                                html += `
-                                    <section class="article-section fade-in">
-                                        <h2>${sec}</h2>
-                                        <p>${content}</p>
-                                    </section>
-                                `;
-                            }
-                        });
-
-                        if (article.references && article.references.length > 0) {
-                            html += `
-                                <section class="article-section fade-in">
-                                    <h2>References</h2>
-                                    <ol class="reference-list">
-                                        ${article.references.map(ref => `<li>${ref}</li>`).join('')}
-                                    </ol>
-                                </section>
-                            `;
-                        }
-                        articleContent.innerHTML = html;
-                        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-                    } else {
-                        articleContent.innerHTML = '<div class="empty-state">Article not found.</div>';
                     }
-                } else {
-                    articleContent.innerHTML = '<div class="empty-state">No article specified.</div>';
+                });
+
+                // References – can be a string or array
+                if (article.references) {
+                    let refHtml = '';
+                    if (Array.isArray(article.references)) {
+                        refHtml = `<ol class="reference-list">${article.references.map(ref => `<li>${escapeHtml(ref)}</li>`).join('')}</ol>`;
+                    } else if (typeof article.references === 'string' && article.references.trim() !== '') {
+                        // If it's a string with line breaks, preserve formatting
+                        refHtml = `<div class="references">${escapeHtml(article.references).replace(/\n/g, '<br>')}</div>`;
+                    }
+                    if (refHtml) {
+                        html += `
+                            <section class="article-section fade-in">
+                                <h2>References</h2>
+                                ${refHtml}
+                            </section>
+                        `;
+                    }
                 }
+
+                // Inject the HTML
+                articleContent.innerHTML = html;
+
+                // Re-apply fade-in animation observer for new elements
+                document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
             }
         });
+    }
+
+    // ----- Helper: escapeHtml to prevent XSS -----
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 });
