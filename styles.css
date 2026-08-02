@@ -715,3 +715,33 @@ main {
         font-size: 0.9rem;
     }
 }
+
+/* Download Button for Article View */
+.article-download {
+    margin-top: 2.5rem;
+    text-align: center;
+}
+
+.download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 0.9rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 51, 102, 0.2);
+}
+
+.download-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 51, 102, 0.3);
+}
+
+.download-btn svg {
+    vertical-align: middle;
+    margin-right: 8px;
+}
