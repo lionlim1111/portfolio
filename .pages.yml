@@ -115,6 +115,10 @@ content:
         fields:
           - name: citation
             type: string
+      - name: download_link
+        label: Download Link (URL)
+        type: string
+        hint: 输入外部下载链接（如 Google Drive、Dropbox 等）
 
   - name: awards
     label: Awards List
