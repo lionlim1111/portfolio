@@ -1,3 +1,6 @@
+/* ================================================================
+   ROOT VARIABLES
+   ================================================================ */
 :root {
     --primary-blue: #003366;
     --medical-white: #F8FDFF;
@@ -9,6 +12,9 @@
     --font-body: 'Inter', sans-serif;
 }
 
+/* ================================================================
+   RESET & BASE
+   ================================================================ */
 * {
     margin: 0;
     padding: 0;
@@ -37,13 +43,19 @@ h6 {
     font-weight: 700;
 }
 
+a {
+    text-decoration: none;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
 }
 
-/* ----- Header – Liquid Glass Effect ----- */
+/* ================================================================
+   HEADER – LIQUID GLASS EFFECT
+   ================================================================ */
 header {
     position: fixed;
     top: 0;
@@ -87,7 +99,61 @@ nav {
     color: var(--accent-blue);
 }
 
-/* Loading Spinner */
+/* ================================================================
+   HAMBURGER MENU (Default hidden on desktop)
+   ================================================================ */
+.hamburger {
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 1001;
+}
+
+.hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary-blue);
+    transition: all 0.3s ease;
+}
+
+/* ================================================================
+   MAIN CONTENT (offset for fixed header)
+   ================================================================ */
+main {
+    flex: 1;
+    padding-top: 80px;
+    width: 100%;
+}
+
+/* ================================================================
+   SECTION
+   ================================================================ */
+.section {
+    padding: 6rem 0;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 4rem;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background-color: var(--primary-blue);
+    margin: 1rem auto 0;
+    border-radius: 2px;
+}
+
+/* ================================================================
+   LOADING SPINNER
+   ================================================================ */
 .loading-container {
     padding: 3rem;
     text-align: center;
@@ -110,7 +176,9 @@ nav {
     }
 }
 
-/* Animations */
+/* ================================================================
+   SCROLL ANIMATIONS (fade-in)
+   ================================================================ */
 .fade-in {
     opacity: 0;
     transform: translateY(20px);
@@ -122,7 +190,9 @@ nav {
     transform: translateY(0);
 }
 
-/* Hero Section */
+/* ================================================================
+   HERO SECTION
+   ================================================================ */
 .hero {
     min-height: calc(100vh - 80px);
     display: flex;
@@ -184,34 +254,9 @@ nav {
     }
 }
 
-/* Hero Buttons Group */
-.hero-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 2rem;
-    align-items: center;
-}
-
-.hero-buttons .btn {
-    flex: 0 1 auto;
-    min-width: 120px; /* 保证每个按钮有最小宽度，更整齐 */
-    text-align: center;
-}
-
-/* 移动端可保持自动换行 */
-@media (max-width: 480px) {
-    .hero-buttons {
-        justify-content: center;
-        gap: 0.75rem;
-    }
-    .hero-buttons .btn {
-        min-width: 100px;
-        font-size: 0.9rem;
-        padding: 0.75rem 1.5rem;
-    }
-}
-
+/* ================================================================
+   BUTTONS
+   ================================================================ */
 .btn {
     display: inline-block;
     background-color: var(--primary-blue);
@@ -228,28 +273,24 @@ nav {
     box-shadow: 0 10px 20px rgba(0, 51, 102, 0.3);
 }
 
-/* About Section */
-.section {
-    padding: 6rem 0;
+/* Hero Buttons Group */
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+    align-items: center;
 }
 
-.section-title {
+.hero-buttons .btn {
+    flex: 0 1 auto;
+    min-width: 120px;
     text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 4rem;
-    position: relative;
 }
 
-.section-title::after {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 4px;
-    background-color: var(--primary-blue);
-    margin: 1rem auto 0;
-    border-radius: 2px;
-}
-
+/* ================================================================
+   ABOUT PAGE
+   ================================================================ */
 .about-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -259,11 +300,9 @@ nav {
     text-align: center;
 }
 
-/* Portfolio Section */
-.portfolio {
-    background-color: #f0f8ff;
-}
-
+/* ================================================================
+   PROJECT / AWARDS CARDS
+   ================================================================ */
 .project-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -290,7 +329,62 @@ nav {
     margin-bottom: 0.5rem;
 }
 
-/* Contact Section */
+/* ================================================================
+   EMPTY STATE & ERROR MESSAGES
+   ================================================================ */
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #4a5568;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+    border: 2px dashed rgba(0, 51, 102, 0.15);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.empty-state .icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.empty-state .sub {
+    font-size: 0.9rem;
+    color: #a0aec0;
+    font-weight: 400;
+    margin-top: 0.5rem;
+}
+
+.error-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #fff5f5;
+    border-radius: 12px;
+    border: 1px solid #feb2b2;
+}
+
+.error-message h2 {
+    color: #c53030;
+    font-family: 'Outfit', sans-serif;
+    margin-bottom: 0.5rem;
+}
+
+.error-message p {
+    color: #4a5568;
+}
+
+.error-message a {
+    color: var(--primary-blue);
+    text-decoration: underline;
+}
+
+/* ================================================================
+   CONTACT FORM
+   ================================================================ */
 .contact-form {
     max-width: 600px;
     margin: 0 auto;
@@ -325,39 +419,13 @@ nav {
     border-color: var(--primary-blue);
 }
 
-footer {
-    background-color: var(--primary-blue);
-    color: white;
-    padding: 2rem 0;
-    text-align: center;
-    margin-top: auto;
-}
-
-main {
-    flex: 1;
-    padding-top: 80px;   /* Height of fixed header + spacing */
-    width: 100%;
-}
-
-/* Articles List */
+/* ================================================================
+   ARTICLES LIST
+   ================================================================ */
 .article-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
-}
-
-.empty-state {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 4rem 2rem;
-    color: var(--text-dark);
-    opacity: 0.7;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
-    border: 1px dashed rgba(0, 51, 102, 0.2);
-    font-size: 1.1rem;
-    font-weight: 500;
 }
 
 .article-card {
@@ -405,19 +473,93 @@ main {
     font-size: 0.9rem;
 }
 
-/* ----- Article View (Single) ----- */
+/* ================================================================
+   SEARCH BOX (Articles page)
+   ================================================================ */
+.search-container {
+    max-width: 600px;
+    margin: -2rem auto 3rem;
+    position: relative;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-family: var(--font-body);
+    background: white;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+}
+
+.search-container input:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 4px rgba(0, 51, 102, 0.1);
+}
+
+.search-container input::placeholder {
+    color: #a0aec0;
+}
+
+.search-container .clear-search {
+    position: absolute;
+    right: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    color: #a0aec0;
+    cursor: pointer;
+    display: none;
+    padding: 0 0.2rem;
+}
+
+.search-container .clear-search.visible {
+    display: block;
+}
+
+.search-container .clear-search:hover {
+    color: var(--primary-blue);
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #718096;
+    font-size: 1.1rem;
+}
+
+.search-stats {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #4a5568;
+    margin-top: -1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.search-stats strong {
+    color: var(--primary-blue);
+}
+
+/* ================================================================
+   ARTICLE SINGLE VIEW
+   ================================================================ */
 .article-view {
     max-width: 900px;
     margin: 0 auto;
     background: #ffffff;
-    padding: 2rem 4rem 3rem;  /* extra top padding for breathing */
+    padding: 2rem 4rem 3rem;
     border-radius: 4px;
     box-shadow: 0 4px 25px rgba(0, 51, 102, 0.08);
 }
 
-/* 增加文章头部与导航栏的间距，避免视觉重叠 */
+/* Article Header */
 .article-header {
-    margin-top: 1.5rem;       /* 与导航保持距离 */
+    margin-top: 1.5rem;
     margin-bottom: 4rem;
     text-align: left;
     position: relative;
@@ -459,6 +601,7 @@ main {
     margin-right: 0.5rem;
 }
 
+/* Article Sections */
 .article-section {
     margin-bottom: 3rem;
 }
@@ -482,6 +625,15 @@ main {
     color: #333;
 }
 
+.article-section .abstract-text {
+    background: #f7fafc;
+    padding: 16px 20px;
+    border-radius: 12px;
+    border-left: 4px solid var(--primary-blue);
+    font-size: 1rem;
+}
+
+/* References */
 .reference-list {
     list-style-type: decimal;
     padding-left: 1.5rem;
@@ -496,32 +648,70 @@ main {
     line-height: 1.5;
 }
 
-/* Hamburger Menu */
-.hamburger {
-    display: none;
-    cursor: pointer;
-    flex-direction: column;
-    gap: 5px;
+.references {
+    font-size: 0.9rem;
+    color: #4a5568;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #f7fafc;
+    padding: 16px 20px;
+    border-radius: 12px;
+    line-height: 1.7;
 }
 
-.hamburger span {
-    display: block;
-    width: 25px;
-    height: 3px;
+/* Download Button */
+.article-download {
+    margin-top: 2.5rem;
+    text-align: center;
+}
+
+.download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background-color: var(--primary-blue);
-    transition: all 0.3s ease;
+    color: white;
+    padding: 0.9rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 51, 102, 0.2);
 }
 
-/* =============================== */
-/* RESPONSIVE STYLES               */
-/* =============================== */
+.download-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 51, 102, 0.3);
+}
 
+.download-btn svg {
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+/* ================================================================
+   FOOTER
+   ================================================================ */
+footer {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
+    margin-top: auto;
+}
+
+/* ================================================================
+   RESPONSIVE – TABLETS & SMALL LAPTOPS (≤ 1024px)
+   ================================================================ */
 @media (max-width: 1024px) {
     .article-view {
         padding: 2rem 2rem 3rem;
     }
 }
 
+/* ================================================================
+   RESPONSIVE – MOBILE (≤ 768px)
+   ================================================================ */
 @media (max-width: 768px) {
     .container {
         padding: 0 1.25rem;
@@ -571,10 +761,9 @@ main {
         box-shadow: 0 10px 25px rgba(0, 51, 102, 0.15);
     }
 
-    /* Mobile Navigation – also liquid glass */
+    /* ===== Mobile Navigation ===== */
     .hamburger {
         display: flex;
-        z-index: 1001;
     }
 
     .nav-links {
@@ -612,6 +801,7 @@ main {
         padding: 0.5rem;
     }
 
+    /* Hamburger Animation */
     .hamburger.active span:nth-child(1) {
         transform: translateY(8px) rotate(45deg);
     }
@@ -622,7 +812,7 @@ main {
         transform: translateY(-8px) rotate(-45deg);
     }
 
-    /* Article View on Mobile */
+    /* ===== Article View on Mobile ===== */
     .article-view {
         padding: 1.5rem 1rem 2rem;
         margin: 0 0.5rem;
@@ -673,8 +863,28 @@ main {
     .reference-list li {
         font-size: 0.85rem;
     }
+
+    /* ===== Search ===== */
+    .search-container {
+        margin: -1rem auto 2rem;
+        padding: 0 1rem;
+    }
+
+    /* ===== Hero Buttons ===== */
+    .hero-buttons {
+        justify-content: center;
+        gap: 0.75rem;
+    }
+    .hero-buttons .btn {
+        min-width: 100px;
+        font-size: 0.9rem;
+        padding: 0.75rem 1.5rem;
+    }
 }
 
+/* ================================================================
+   RESPONSIVE – SMALL PHONES (≤ 480px)
+   ================================================================ */
 @media (max-width: 480px) {
     .hero-text h1 {
         font-size: 1.8rem;
@@ -707,108 +917,14 @@ main {
     }
 }
 
+/* ================================================================
+   RESPONSIVE – EXTRA SMALL (≤ 400px)
+   ================================================================ */
 @media (max-width: 400px) {
     .article-header h1 {
         font-size: 1.3rem;
     }
     .article-section p {
         font-size: 0.9rem;
-    }
-}
-
-/* Download Button for Article View */
-.article-download {
-    margin-top: 2.5rem;
-    text-align: center;
-}
-
-.download-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--primary-blue);
-    color: white;
-    padding: 0.9rem 2.5rem;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 51, 102, 0.2);
-}
-
-.download-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 51, 102, 0.3);
-}
-
-.download-btn svg {
-    vertical-align: middle;
-    margin-right: 8px;
-}
-
-/* Search box */
-.search-container {
-    max-width: 600px;
-    margin: -2rem auto 3rem;
-    position: relative;
-}
-.search-container input {
-    width: 100%;
-    padding: 0.9rem 1.5rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 50px;
-    font-size: 1rem;
-    font-family: var(--font-body);
-    background: white;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    outline: none;
-}
-.search-container input:focus {
-    border-color: var(--primary-blue);
-    box-shadow: 0 0 0 4px rgba(0, 51, 102, 0.1);
-}
-.search-container input::placeholder {
-    color: #a0aec0;
-}
-.search-container .clear-search {
-    position: absolute;
-    right: 1.2rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    font-size: 1.4rem;
-    color: #a0aec0;
-    cursor: pointer;
-    display: none;
-    padding: 0 0.2rem;
-}
-.search-container .clear-search.visible {
-    display: block;
-}
-.search-container .clear-search:hover {
-    color: var(--primary-blue);
-}
-.no-results {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 3rem 1rem;
-    color: #718096;
-    font-size: 1.1rem;
-}
-.search-stats {
-    text-align: center;
-    font-size: 0.95rem;
-    color: #4a5568;
-    margin-top: -1.5rem;
-    margin-bottom: 1.5rem;
-}
-.search-stats strong {
-    color: var(--primary-blue);
-}
-@media (max-width: 768px) {
-    .search-container {
-        margin: -1rem auto 2rem;
-        padding: 0 1rem;
     }
 }
