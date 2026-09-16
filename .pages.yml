@@ -118,7 +118,7 @@ content:
       - name: download_link
         label: Download Link (URL)
         type: string
-        hint: 输入外部下载链接（如 Google Drive、Dropbox 等）
+        hint: Enter an external download link (e.g., Google Drive, Dropbox, etc.)
 
   - name: awards
     label: Awards List
